@@ -2,21 +2,21 @@ import * as React from 'react';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-
+import { useHistory} from "react-router-dom";
 export function AddUsers({ users, setUsers }) {
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [job, setJob] = useState("");
   const [zipcode, setZipcode] = useState("");
   const [country, setCountry] = useState("");
-
+  const history=useHistory();
   const addUser = () => {
     console.log("adiing", name, avatar, job, zipcode, country);
     const newUser = { name, avatar, job, zipcode, country };
     console.log(newUser);
 
     setUsers([...users, newUser]);
-
+history.push("/users/")
   };
 
   return (
