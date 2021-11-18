@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useHistory} from "react-router-dom";
-export function AddUsers({ users, setUsers }) {
+export function AddUsers() {
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [job, setJob] = useState("");
@@ -14,9 +14,14 @@ export function AddUsers({ users, setUsers }) {
     console.log("adiing", name, avatar, job, zipcode, country);
     const newUser = { name, avatar, job, zipcode, country };
     console.log(newUser);
-
-    setUsers([...users, newUser]);
-history.push("/users/")
+    fetch("https://61921f11aeab5c0017105d60.mockapi.io/users",{
+      method: "POST",
+      body: JSON.stringify(newUser),
+      headers: {'Content-Type': 'application/json'},
+    })
+    .then(()=>history.push("/users/"));
+//     setUsers([...users, newUser]);
+// history.push("/users/")
   };
 
   return (
