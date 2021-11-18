@@ -7,6 +7,7 @@
   object-fit: cover;
   border-radius: 50px;
   box-shadow: 8px 9px 5px -3px rgba(0,0,0,0.75);
+  
 }
 
 .userslist{
@@ -14,7 +15,7 @@
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
-  align-items: center;
+
   justify-content: space-around;
   font-family: 'Roboto', sans-serif;
  

@@ -4,7 +4,7 @@ import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import { useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
-import { Switch, Route ,Redirect,useHistory,useParams } from "react-router-dom";
+import { Switch, Route,useHistory,useParams } from "react-router-dom";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -14,8 +14,9 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
+import { AddUsers } from './AddUsers';
+import TextField from '@mui/material/TextField';
 
 function App() {
 
@@ -28,7 +29,7 @@ function App() {
     mode: mode
   },
 });
-  const users=[
+  const INTIAL_USERS=[
     {
       name: "Salvatore Wunsch",
       avatar: "https://cdn.fakercloud.com/avatars/kushsolitary_128.jpg",
@@ -118,7 +119,7 @@ function App() {
       id: "11"
      }
   ]    
-
+  const[users,setUsers]=useState(INTIAL_USERS)
   return (
     <ThemeProvider theme ={theme}>
       <Paper elevation={4} style 
@@ -139,10 +140,14 @@ function App() {
     </Box>
     <Switch>
 <Route exact path="/users">
-<Userslist names={users} /> </Route>   
+<Userslist users={users} setUsers={setUsers}  /> </Route>   
   <Route path="/addusers">
-  <AddUsers />
+  <AddUsers users={users} setUsers={setUsers} />
   </Route>
+  <Route path="/users/edit/:id">
+   <EditUsers users={users} setUsers={setUsers} />
+</Route>
+ <Route path="/">Click users</Route>
  <Route path="**">Not found 404</Route>
   </Switch>
   
@@ -151,19 +156,13 @@ function App() {
     </ThemeProvider>
   );
 }
-
-function Userslist({names}){
-return (
-  <div className="userslist">
-      {names.map((nm)=>(<Msg name={nm.name} avatar={nm.avatar}
-      zipcode={nm.zipcode} country={nm.country} job={nm.job} />))}
-  </div>
-)
-}
+export default App;
 
 
-function Msg({name,avatar,zipcode,job,country}) {
+
+function Msg({name,avatar,zipcode,job,country,id,deleteButton}) {
   // const name ="mad"
+  const history=useHistory();
   return(
     <Card sx={{ minWidth: 275 }}>
     <CardContent>
@@ -177,29 +176,69 @@ function Msg({name,avatar,zipcode,job,country}) {
       </div>   </div>
       </CardContent>
       <CardActions>
-      <IconButton aria-label="edit"  color="primary">
+      <IconButton onClick={()=>{ 
+        history.push("/users/edit/"+ id)}} aria-label="edit"  color="primary">
         <EditIcon />
-      </IconButton><IconButton aria-label="delete"  color="error">
-        <DeleteIcon />
-      </IconButton>
+      </IconButton>{deleteButton}
       </CardActions>
     </Card>
   )
   
 }
+function Userslist({users , setUsers }){
+  return (
+  <div className="userslist">
+      {users.map((nm,index)=>(<Msg 
+      name={nm.name} avatar={nm.avatar}
+      zipcode={nm.zipcode} country={nm.country}
+       job={nm.job} id={index} key={nm.id}
+deleteButton ={<IconButton
+      onClick={()=>{
+        console.log(index);
+       setUsers (users.filter((nm,idx)=> idx !== index ))}} aria-label="delete"  color="error">
+        <DeleteIcon />
+      </IconButton>} />
+      ))}
+  </div>
+)
+}
+function EditUsers({users,setUsers}){
+  const history=useHistory();
+  const{id} = useParams();
+  const user = users[id];
+  console.log(id,user)
+  const [name, setName] = useState(user.name);
+  const [avatar, setAvatar] = useState(user.avatar);
+  const [job, setJob] = useState(user.job);
+  const [zipcode, setZipcode] = useState(user.zipcode);
+  const [country, setCountry] = useState(user.country);
+  
+  const editUser=()=>{
+      const updateUser = {
+      name, avatar, job, zipcode, country }
+   console.log(updateUser);
+  const copyUser = [...users];
+  copyUser[id] = updateUser;
+  setUsers(copyUser)
+history.push("/users/")
 
-function AddUsers(){
-  return(
+  };
+  return (
     <div className="addusers">
-       <TextField  label="name" variant="standard" />
-       <TextField  label="avatar" variant="standard" />
-       <TextField  label="job" variant="standard" />
-       <TextField  label="zipcode" variant="standard" />
-       <TextField  label="country" variant="standard" />
-       <Button variant="outlined">AddUser</Button>
+      <TextField value={name}
+        onChange={(event) => setName(event.target.value)} label="name" variant="standard" />
+      <TextField value={avatar}
+        onChange={(event) => setAvatar(event.target.value)} label="avatar" variant="standard" />
+      <TextField value={job}
+        onChange={(event) => setJob(event.target.value)} label="job" variant="standard" />
+      <TextField
+        value={zipcode}
+        onChange={(event) => setZipcode(event.target.value)} label="zipcode" variant="standard" />
+      <TextField
+        value={country}
+        onChange={(event) => setCountry(event.target.value)} label="country" variant="standard" />
+      <Button onClick={editUser} variant="outlined">SaveUser</Button>
 
     </div>
-  )
+  );
 }
-
-export default App;
