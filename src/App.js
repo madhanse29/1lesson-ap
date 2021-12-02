@@ -63,7 +63,7 @@ function App() {
   <Route path="/users/edit/:id">
    <EditUsers users={users} setUsers={setUsers} />
 </Route>
- <Route path="/">Click users</Route>
+ <Route path="/">Click add users is with validation</Route>
  <Route path="**">Not found 404</Route>
   </Switch>
   
