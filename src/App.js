@@ -92,10 +92,7 @@ function Msg({name,avatar,zipcode,job,country,id,deleteButton}) {
       </div>   </div>
       </CardContent>
       <CardActions>
-      <IconButton onClick={()=>{ 
-        history.push("/users/edit/"+ id)}} aria-label="edit"  color="primary">
-        <EditIcon />
-      </IconButton>{deleteButton}
+     {deleteButton}
       </CardActions>
     </Card>
   )
